@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  api-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rest-assured-api-tests
+    volumes:
+      - ./target/allure-results:/app/target/allure-results
+      - ./target/surefire-reports:/app/target/surefire-reports
+    network_mode: host

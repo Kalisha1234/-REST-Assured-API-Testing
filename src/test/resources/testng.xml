@@ -1,0 +1,40 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="JSONPlaceholder API Test Suite" verbose="1" parallel="classes" thread-count="3">
+
+    <test name="Posts API Tests">
+        <classes>
+            <class name="QA.posts.PostsTest"/>
+        </classes>
+    </test>
+
+    <test name="Comments API Tests">
+        <classes>
+            <class name="QA.comments.CommentsTest"/>
+        </classes>
+    </test>
+
+    <test name="Albums API Tests">
+        <classes>
+            <class name="QA.albums.AlbumsTest"/>
+        </classes>
+    </test>
+
+    <test name="Photos API Tests">
+        <classes>
+            <class name="QA.photos.PhotosTest"/>
+        </classes>
+    </test>
+
+    <test name="Todos API Tests">
+        <classes>
+            <class name="QA.todos.TodosTest"/>
+        </classes>
+    </test>
+
+    <test name="Users API Tests">
+        <classes>
+            <class name="QA.users.UsersTest"/>
+        </classes>
+    </test>
+
+</suite>
