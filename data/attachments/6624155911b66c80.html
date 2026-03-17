@@ -1,0 +1,30 @@
+<div>POST to https://jsonplaceholder.typicode.com/comments</div>
+
+<h4>Body</h4>
+<div>
+    <pre class="preformated-text">
+{
+    &quot;name&quot;: &quot;Comment with Specials!@#&quot;,
+    &quot;postId&quot;: 50,
+    &quot;body&quot;: &quot;Body with &lt;special&gt; chars&quot;,
+    &quot;email&quot;: &quot;special@test.com&quot;
+}    </pre>
+</div>
+
+<h4>Headers</h4>
+<div>
+        <div>Accept: */*</div>
+        <div>Content-Type: application/json</div>
+</div>
+
+
+
+<h4>Curl</h4>
+<div>
+curl -v -X POST &#39;https://jsonplaceholder.typicode.com/comments&#39; -H &#39;Accept: */*&#39; -H &#39;Content-Type: application/json&#39; -d &#39;{
+    &quot;name&quot;: &quot;Comment with Specials!@#&quot;,
+    &quot;postId&quot;: 50,
+    &quot;body&quot;: &quot;Body with &lt;special&gt; chars&quot;,
+    &quot;email&quot;: &quot;special@test.com&quot;
+}&#39;
+</div>

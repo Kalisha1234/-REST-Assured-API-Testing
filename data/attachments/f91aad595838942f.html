@@ -1,0 +1,62 @@
+<div>POST to https://jsonplaceholder.typicode.com/users</div>
+
+<h4>Body</h4>
+<div>
+    <pre class="preformated-text">
+{
+    &quot;website&quot;: &quot;janesmith.com&quot;,
+    &quot;address&quot;: {
+        &quot;zipcode&quot;: &quot;12345-6789&quot;,
+        &quot;geo&quot;: {
+            &quot;lng&quot;: &quot;81.1496&quot;,
+            &quot;lat&quot;: &quot;-37.3159&quot;
+        },
+        &quot;suite&quot;: &quot;Suite 100&quot;,
+        &quot;city&quot;: &quot;Test City&quot;,
+        &quot;street&quot;: &quot;Test Street&quot;
+    },
+    &quot;phone&quot;: &quot;9-876-543-2100&quot;,
+    &quot;name&quot;: &quot;Jane Smith&quot;,
+    &quot;company&quot;: {
+        &quot;bs&quot;: &quot;harness real-time e-markets&quot;,
+        &quot;catchPhrase&quot;: &quot;Multi-layered client-server neural-net&quot;,
+        &quot;name&quot;: &quot;Test Company&quot;
+    },
+    &quot;email&quot;: &quot;jane@example.com&quot;,
+    &quot;username&quot;: &quot;janesmith&quot;
+}    </pre>
+</div>
+
+<h4>Headers</h4>
+<div>
+        <div>Accept: */*</div>
+        <div>Content-Type: application/json</div>
+</div>
+
+
+
+<h4>Curl</h4>
+<div>
+curl -v -X POST &#39;https://jsonplaceholder.typicode.com/users&#39; -H &#39;Accept: */*&#39; -H &#39;Content-Type: application/json&#39; -d &#39;{
+    &quot;website&quot;: &quot;janesmith.com&quot;,
+    &quot;address&quot;: {
+        &quot;zipcode&quot;: &quot;12345-6789&quot;,
+        &quot;geo&quot;: {
+            &quot;lng&quot;: &quot;81.1496&quot;,
+            &quot;lat&quot;: &quot;-37.3159&quot;
+        },
+        &quot;suite&quot;: &quot;Suite 100&quot;,
+        &quot;city&quot;: &quot;Test City&quot;,
+        &quot;street&quot;: &quot;Test Street&quot;
+    },
+    &quot;phone&quot;: &quot;9-876-543-2100&quot;,
+    &quot;name&quot;: &quot;Jane Smith&quot;,
+    &quot;company&quot;: {
+        &quot;bs&quot;: &quot;harness real-time e-markets&quot;,
+        &quot;catchPhrase&quot;: &quot;Multi-layered client-server neural-net&quot;,
+        &quot;name&quot;: &quot;Test Company&quot;
+    },
+    &quot;email&quot;: &quot;jane@example.com&quot;,
+    &quot;username&quot;: &quot;janesmith&quot;
+}&#39;
+</div>

@@ -1,0 +1,28 @@
+<div>POST to https://jsonplaceholder.typicode.com/posts</div>
+
+<h4>Body</h4>
+<div>
+    <pre class="preformated-text">
+{
+    &quot;title&quot;: &quot;Post With Special Chars!@#&quot;,
+    &quot;body&quot;: &quot;Body with special characters: &lt;&gt;&amp;&quot;,
+    &quot;userId&quot;: 5
+}    </pre>
+</div>
+
+<h4>Headers</h4>
+<div>
+        <div>Accept: */*</div>
+        <div>Content-Type: application/json</div>
+</div>
+
+
+
+<h4>Curl</h4>
+<div>
+curl -v -X POST &#39;https://jsonplaceholder.typicode.com/posts&#39; -H &#39;Accept: */*&#39; -H &#39;Content-Type: application/json&#39; -d &#39;{
+    &quot;title&quot;: &quot;Post With Special Chars!@#&quot;,
+    &quot;body&quot;: &quot;Body with special characters: &lt;&gt;&amp;&quot;,
+    &quot;userId&quot;: 5
+}&#39;
+</div>
