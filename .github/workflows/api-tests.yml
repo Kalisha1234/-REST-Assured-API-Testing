@@ -31,13 +31,19 @@ jobs:
       - name: Run API Tests
         run: mvn clean test -B
 
-      # Generate Allure Report (official action)
+      # Install Allure
+      - name: Install Allure
+        if: always()
+        run: |
+          curl -o allure-2.25.0.tgz -L https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.tgz
+          tar -zxvf allure-2.25.0.tgz
+          sudo mv allure-2.25.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+
+      # Generate Allure Report
       - name: Generate Allure Report
         if: always()
-        uses: allure-framework/allure-github-action@v1
-        with:
-          results: target/allure-results
-          report: allure-report
+        run: allure generate target/allure-results -o allure-report --clean
 
       # Deploy Allure report to GitHub Pages
       - name: Deploy report to GitHub Pages
