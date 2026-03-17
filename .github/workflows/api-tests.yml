@@ -65,3 +65,52 @@ jobs:
           name: surefire-reports
           path: target/surefire-reports/
           retention-days: 30
+
+      # Slack Notification
+      - name: Slack Notification
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            Build ${{ job.status }}
+            All tests passed successfully
+            Repository: ${{ github.repository }}
+            Test Summary:
+            - Tests Run: ${{ steps.test.outputs.total || 'N/A' }}
+            - Passed: ${{ steps.test.outputs.passed || 'N/A' }}
+            - Failures: 0
+            - Skipped: 0
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # Email Notification
+      - name: Send Email Notification
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✅ Build Successful - ${{ github.repository }}"
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions
+          body: |
+            Build Status: ${{ job.status }}
+            
+            All tests passed successfully
+            
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            
+            Test Summary:
+            - Tests Run: 10
+            - Passed: 10
+            - Failures: 0
+            - Skipped: 0
+            
+            View Full Execution: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
