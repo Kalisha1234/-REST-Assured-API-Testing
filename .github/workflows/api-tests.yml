@@ -29,7 +29,43 @@ jobs:
 
       # Run API tests
       - name: Run API Tests
+        id: test
         run: mvn clean test -B
+        continue-on-error: true
+
+      # Extract test results
+      - name: Extract Test Results
+        id: test_results
+        if: always()
+        run: |
+          if [ -f target/surefire-reports/TEST-TestSuite.xml ]; then
+            TESTS=$(grep -oP 'tests="\K[0-9]+' target/surefire-reports/TEST-TestSuite.xml | head -1)
+            FAILURES=$(grep -oP 'failures="\K[0-9]+' target/surefire-reports/TEST-TestSuite.xml | head -1)
+            ERRORS=$(grep -oP 'errors="\K[0-9]+' target/surefire-reports/TEST-TestSuite.xml | head -1)
+            SKIPPED=$(grep -oP 'skipped="\K[0-9]+' target/surefire-reports/TEST-TestSuite.xml | head -1)
+            PASSED=$((TESTS - FAILURES - ERRORS - SKIPPED))
+          else
+            TESTS=0
+            FAILURES=0
+            ERRORS=0
+            SKIPPED=0
+            PASSED=0
+          fi
+          echo "tests=$TESTS" >> $GITHUB_OUTPUT
+          echo "failures=$FAILURES" >> $GITHUB_OUTPUT
+          echo "errors=$ERRORS" >> $GITHUB_OUTPUT
+          echo "skipped=$SKIPPED" >> $GITHUB_OUTPUT
+          echo "passed=$PASSED" >> $GITHUB_OUTPUT
+          
+          if [ $FAILURES -eq 0 ] && [ $ERRORS -eq 0 ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "status_icon=✅" >> $GITHUB_OUTPUT
+            echo "status_text=Build Successful" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "status_icon=❌" >> $GITHUB_OUTPUT
+            echo "status_text=Build Failed" >> $GITHUB_OUTPUT
+          fi
 
       # Install Allure
       - name: Install Allure
@@ -77,16 +113,18 @@ jobs:
         if: always()
         uses: 8398a7/action-slack@v3
         with:
-          status: ${{ job.status }}
+          status: ${{ steps.test_results.outputs.status }}
           text: |
-            Build ${{ job.status }}
+            ${{ steps.test_results.outputs.status_icon }} ${{ steps.test_results.outputs.status_text }}
             All tests passed successfully
+            
             Repository: ${{ github.repository }}
+            
             Test Summary:
-            - Tests Run: ${{ steps.test.outputs.total || 'N/A' }}
-            - Passed: ${{ steps.test.outputs.passed || 'N/A' }}
-            - Failures: 0
-            - Skipped: 0
+            - Tests Run: ${{ steps.test_results.outputs.tests }}
+            - Passed: ${{ steps.test_results.outputs.passed }}
+            - Failures: ${{ steps.test_results.outputs.failures }}
+            - Skipped: ${{ steps.test_results.outputs.skipped }}
           fields: repo,message,commit,author,action,eventName,ref,workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -100,12 +138,11 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "✅ Build Successful - ${{ github.repository }}"
+          subject: "${{ steps.test_results.outputs.status_icon }} ${{ steps.test_results.outputs.status_text }} - ${{ github.repository }}"
           to: ${{ secrets.EMAIL_TO }}
           from: GitHub Actions
           body: |
-            Build Status: ${{ job.status }}
-            
+            ${{ steps.test_results.outputs.status_icon }} ${{ steps.test_results.outputs.status_text }}
             All tests passed successfully
             
             Repository: ${{ github.repository }}
@@ -114,9 +151,9 @@ jobs:
             Author: ${{ github.actor }}
             
             Test Summary:
-            - Tests Run: 10
-            - Passed: 10
-            - Failures: 0
-            - Skipped: 0
+            - Tests Run: ${{ steps.test_results.outputs.tests }}
+            - Passed: ${{ steps.test_results.outputs.passed }}
+            - Failures: ${{ steps.test_results.outputs.failures }}
+            - Skipped: ${{ steps.test_results.outputs.skipped }}
             
             View Full Execution: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
