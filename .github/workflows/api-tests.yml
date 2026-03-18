@@ -115,16 +115,28 @@ jobs:
         with:
           status: ${{ steps.test_results.outputs.status }}
           text: |
-            ${{ steps.test_results.outputs.status_icon }} ${{ steps.test_results.outputs.status_text }}
-            All tests passed successfully
+            🚀 **API Testing Pipeline Report**
             
-            Repository: ${{ github.repository }}
+            ${{ steps.test_results.outputs.status_icon }} **${{ steps.test_results.outputs.status_text }}**
             
-            Test Summary:
-            - Tests Run: ${{ steps.test_results.outputs.tests }}
-            - Passed: ${{ steps.test_results.outputs.passed }}
-            - Failures: ${{ steps.test_results.outputs.failures }}
-            - Skipped: ${{ steps.test_results.outputs.skipped }}
+            📊 **Test Summary Dashboard**
+            ```
+            ┌─────────────────────────────────────┐
+            │           TEST RESULTS              │
+            ├─────────────────────────────────────┤
+            │ 🧪 Tests Run:    ${{ steps.test_results.outputs.tests }}                │
+            │ ✅ Passed:       ${{ steps.test_results.outputs.passed }}                │
+            │ ❌ Failures:     ${{ steps.test_results.outputs.failures }}                │
+            │ ⏭️  Skipped:      ${{ steps.test_results.outputs.skipped }}                │
+            └─────────────────────────────────────┘
+            ```
+            
+            📁 **Repository:** `${{ github.repository }}`
+            🌿 **Branch:** `${{ github.ref_name }}`
+            👤 **Author:** `${{ github.actor }}`
+            
+            🔗 [View Full Execution](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            📊 [View Allure Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})
           fields: repo,message,commit,author,action,eventName,ref,workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -138,22 +150,99 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "${{ steps.test_results.outputs.status_icon }} ${{ steps.test_results.outputs.status_text }} - ${{ github.repository }}"
+          subject: "${{ steps.test_results.outputs.status_icon }} API Test Report - ${{ steps.test_results.outputs.status_text }}"
           to: ${{ secrets.EMAIL_TO }}
-          from: GitHub Actions
-          body: |
-            ${{ steps.test_results.outputs.status_icon }} ${{ steps.test_results.outputs.status_text }}
-            All tests passed successfully
-            
-            Repository: ${{ github.repository }}
-            Branch: ${{ github.ref }}
-            Commit: ${{ github.sha }}
-            Author: ${{ github.actor }}
-            
-            Test Summary:
-            - Tests Run: ${{ steps.test_results.outputs.tests }}
-            - Passed: ${{ steps.test_results.outputs.passed }}
-            - Failures: ${{ steps.test_results.outputs.failures }}
-            - Skipped: ${{ steps.test_results.outputs.skipped }}
-            
-            View Full Execution: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          from: GitHub Actions <noreply@github.com>
+          html_body: |
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f7fa; }
+                    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; }
+                    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+                    .status-success { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+                    .status-failure { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); }
+                    .content { padding: 30px; }
+                    .test-summary { background: #f8fafc; border-radius: 8px; padding: 20px; margin: 20px 0; }
+                    .metric { display: inline-block; margin: 10px 15px; text-align: center; }
+                    .metric-value { font-size: 32px; font-weight: bold; display: block; }
+                    .metric-label { font-size: 14px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+                    .passed { color: #10b981; }
+                    .failed { color: #ef4444; }
+                    .skipped { color: #f59e0b; }
+                    .total { color: #3b82f6; }
+                    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+                    .info-item { background: #f1f5f9; padding: 15px; border-radius: 6px; }
+                    .info-label { font-weight: bold; color: #475569; font-size: 12px; text-transform: uppercase; }
+                    .info-value { color: #1e293b; margin-top: 5px; font-family: monospace; }
+                    .buttons { text-align: center; margin: 30px 0; }
+                    .btn { display: inline-block; padding: 12px 24px; margin: 0 10px; text-decoration: none; border-radius: 6px; font-weight: bold; }
+                    .btn-primary { background: #3b82f6; color: white; }
+                    .btn-secondary { background: #64748b; color: white; }
+                    .footer { background: #f8fafc; padding: 20px; text-align: center; color: #64748b; font-size: 12px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header ${{ steps.test_results.outputs.failures == '0' && steps.test_results.outputs.errors == '0' && 'status-success' || 'status-failure' }}">
+                        <h1>${{ steps.test_results.outputs.status_icon }} API Test Report</h1>
+                        <h2>${{ steps.test_results.outputs.status_text }}</h2>
+                        <p>Automated Test Execution Complete</p>
+                    </div>
+                    
+                    <div class="content">
+                        <div class="test-summary">
+                            <h3>📊 Test Results Dashboard</h3>
+                            <div style="text-align: center;">
+                                <div class="metric">
+                                    <span class="metric-value total">${{ steps.test_results.outputs.tests }}</span>
+                                    <span class="metric-label">🧪 Total Tests</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-value passed">${{ steps.test_results.outputs.passed }}</span>
+                                    <span class="metric-label">✅ Passed</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-value failed">${{ steps.test_results.outputs.failures }}</span>
+                                    <span class="metric-label">❌ Failures</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-value skipped">${{ steps.test_results.outputs.skipped }}</span>
+                                    <span class="metric-label">⏭️ Skipped</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">📁 Repository</div>
+                                <div class="info-value">${{ github.repository }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">🌿 Branch</div>
+                                <div class="info-value">${{ github.ref_name }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">👤 Author</div>
+                                <div class="info-value">${{ github.actor }}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">🕐 Timestamp</div>
+                                <div class="info-value">${{ github.event.head_commit.timestamp }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="buttons">
+                            <a href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" class="btn btn-primary">🔗 View Full Execution</a>
+                            <a href="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" class="btn btn-secondary">📊 View Allure Report</a>
+                        </div>
+                    </div>
+                    
+                    <div class="footer">
+                        <p>🤖 Generated by GitHub Actions • Automated Test Report</p>
+                        <p>Commit: <code>${{ github.sha }}</code></p>
+                    </div>
+                </div>
+            </body>
+            </html>
